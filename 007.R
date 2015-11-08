@@ -145,11 +145,21 @@ actor.grp <- bond.dta %>%
   )
 
 
+## plot with actor years of service
 ggplot() + 
   # place geom_rect first, then other geoms will "write over" the rectangles
   geom_rect(data = actor.grp, aes(xmin = yearmin, xmax = yearmax, 
                                   ymin = -Inf, ymax = Inf, 
-                                  fill = Bond.actor), alpha = 0.4)+
+                                  fill = Bond.actor), alpha = 0.3)+
+  # write actor names on rectangles
+  geom_text(data = actor.grp, aes(x = yearmin, 
+                                  y = 0.9*max(bond.dta$Box.office.2005.adj, na.rm = TRUE), 
+                                  label = Bond.actor,
+                                  # colour is already mapped to RT.rating (continuous)
+                                  # fill=Bond.actor,
+                                  angle = 90, 
+                                  alpha = 0.6))+
+  # film data
   geom_point(data = bond.dta, aes(x = Year, 
                  y = Box.office.2005.adj, 
                  size = Budget.2005.adj, 
