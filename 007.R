@@ -125,12 +125,13 @@ bond.dta %>% ggplot()+
 
 ## get Bond actor year grouping for rectangling
 actor.grp <- bond.dta %>% 
-  mutate(
-    grouptemp = ifelse(lag(Bond.actor)==Bond.actor, 0, 1),
-    grouptemp = ifelse(is.na(grouptemp), 1, grouptemp),
-    group = cumsum(grouptemp)
-  ) %>% 
-  select(Bond.actor, Year, group) %>% 
+  # all of this in unneeded, as I'll just let Lazenby "overwrite" Connery in 1969
+#   mutate(
+#     grouptemp = ifelse(lag(Bond.actor)==Bond.actor, 0, 1),
+#     grouptemp = ifelse(is.na(grouptemp), 1, grouptemp),
+#     group = cumsum(grouptemp)
+#   ) %>% 
+#   select(Bond.actor, Year, group) %>% 
   group_by(Bond.actor) %>% 
   summarise(
     yearmin = min(Year), 
@@ -138,25 +139,27 @@ actor.grp <- bond.dta %>%
   ) %>% 
   ungroup() %>% 
   arrange(yearmin) %>% 
-  # George Lazenby only had one film, which chockes geom_rect
+  # George Lazenby only had one film, which makes geom_rect "invisible"
   mutate(
     yearmax = ifelse(yearmin==yearmax, yearmax+1, yearmax)
   )
 
 
 ggplot() + 
+  # place geom_rect first, then other geoms will "write over" the rectangles
   geom_rect(data = actor.grp, aes(xmin = yearmin, xmax = yearmax, 
                                   ymin = -Inf, ymax = Inf, 
                                   fill = Bond.actor), alpha = 0.4)+
-  geom_point(data = bond.dta, aes(x=Year, 
-                 y=Box.office.2005.adj, 
-                 size=Budget.2005.adj, 
-                 colour=as.numeric(Rotten.Tomatoes.rating)
+  geom_point(data = bond.dta, aes(x = Year, 
+                 y = Box.office.2005.adj, 
+                 size = Budget.2005.adj, 
+                 colour = as.numeric(Rotten.Tomatoes.rating)
   ))+
   # Rotten Tomatoes rating gradient
   scale_colour_continuous()+
   # increase minimum point size for readability
-  scale_size_continuous(range = c(3, 10))
+  scale_size_continuous(range = c(3, 10))+
+  labs(title = "James Bond films", x="", y="Box office earnings (in 2005 dollars)")
 
 
 
