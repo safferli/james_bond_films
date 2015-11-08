@@ -8,7 +8,7 @@ options(scipen = 999)
 library(ggplot2)
 library(rvest)
 library(dplyr)
-#library(tidyr)
+library(tidyr)
 #library(data.table)
 
 # Define your workspace: "X:/xxx/"
@@ -99,6 +99,7 @@ bond.ratings %<>%
   ) %>% 
   # reorder to original order
   select(Title, Year:Awards) %>% 
+  # split the RT into rating and number of reviewers
   separate(Rotten.Tomatoes, c("Rotten.Tomatoes.rating", "Rotten.Tomatoes.reviews"), sep="%") %>% 
   mutate(
     Rotten.Tomatoes.reviews = sub("^ \\((\\d*) reviews\\).*", "\\1", Rotten.Tomatoes.reviews)
@@ -110,6 +111,54 @@ bond.dta <- bond.films %>%
   merge(bond.ratings) %>% 
   select(-Actor) %>% 
   arrange(Year)
+
+
+## graphing
+bond.dta %>% ggplot()+
+  geom_point(aes(x=Year, 
+                 y=Box.office.2005.adj, 
+                 size=Budget.2005.adj, 
+                 colour=as.numeric(Rotten.Tomatoes.rating)
+            ))+
+  scale_colour_continuous()
+
+
+## get Bond actor year grouping for rectangling
+actor.grp <- bond.dta %>% 
+  mutate(
+    grouptemp = ifelse(lag(Bond.actor)==Bond.actor, 0, 1),
+    grouptemp = ifelse(is.na(grouptemp), 1, grouptemp),
+    group = cumsum(grouptemp)
+  ) %>% 
+  select(Bond.actor, Year, group) %>% 
+  group_by(Bond.actor) %>% 
+  summarise(
+    yearmin = min(Year), 
+    yearmax = max(Year)
+  ) %>% 
+  ungroup() %>% 
+  arrange(yearmin) %>% 
+  # George Lazenby only had one film, which chockes geom_rect
+  mutate(
+    yearmax = ifelse(yearmin==yearmax, yearmax+1, yearmax)
+  )
+
+
+ggplot() + 
+  geom_rect(data = actor.grp, aes(xmin = yearmin, xmax = yearmax, 
+                                  ymin = -Inf, ymax = Inf, 
+                                  fill = Bond.actor), alpha = 0.4)+
+  geom_point(data = bond.dta, aes(x=Year, 
+                 y=Box.office.2005.adj, 
+                 size=Budget.2005.adj, 
+                 colour=as.numeric(Rotten.Tomatoes.rating)
+  ))+
+  # Rotten Tomatoes rating gradient
+  scale_colour_continuous()+
+  # increase minimum point size for readability
+  scale_size_continuous(range = c(3, 10))
+
+
 
 
 
