@@ -123,15 +123,16 @@ bond.dta %>% ggplot()+
   scale_colour_continuous()
 
 
+# http://stackoverflow.com/questions/9968975/using-ggplot2-in-r-how-do-i-make-the-background-of-a-graph-different-colours-in
 ## get Bond actor year grouping for rectangling
 actor.grp <- bond.dta %>% 
   # all of this in unneeded, as I'll just let Lazenby "overwrite" Connery in 1969
-#   mutate(
-#     grouptemp = ifelse(lag(Bond.actor)==Bond.actor, 0, 1),
-#     grouptemp = ifelse(is.na(grouptemp), 1, grouptemp),
-#     group = cumsum(grouptemp)
-#   ) %>% 
-#   select(Bond.actor, Year, group) %>% 
+  # mutate(
+  #   grouptemp = ifelse(lag(Bond.actor)==Bond.actor, 0, 1),
+  #   grouptemp = ifelse(is.na(grouptemp), 1, grouptemp),
+  #   group = cumsum(grouptemp)
+  # ) %>% 
+  # select(Bond.actor, Year, group) %>% 
   group_by(Bond.actor) %>% 
   summarise(
     yearmin = min(Year), 
@@ -153,6 +154,7 @@ ggplot() +
                                   fill = Bond.actor), alpha = 0.3)+
   # write actor names on rectangles
   geom_text(data = actor.grp, aes(x = yearmin, 
+                                  # place text rather at the top of the y-axis
                                   y = 0.9*max(bond.dta$Box.office.2005.adj, na.rm = TRUE), 
                                   label = Bond.actor,
                                   # colour is already mapped to RT.rating (continuous)
@@ -175,21 +177,7 @@ ggplot() +
 
 
 
-# http://stackoverflow.com/questions/9968975/using-ggplot2-in-r-how-do-i-make-the-background-of-a-graph-different-colours-in
 
-#Fake data
-dat <- data.frame(x = 1:100, y = cumsum(rnorm(100)))
-#Breaks for background rectangles
-rects <- data.frame(xstart = seq(0,80,20), xend = seq(20,100,20), col = letters[1:5])
-
-
-#As Baptiste points out, the order of the geom's matters, so putting your data as last will 
-#make sure that it is plotted "on top" of the background rectangles. Updated code, but
-#did not update the JPEG...I think you'll get the point.
-
-ggplot() + 
-  geom_rect(data = rects, aes(xmin = xstart, xmax = xend, ymin = -Inf, ymax = Inf, fill = col), alpha = 0.4) +
-  geom_line(data = dat, aes(x,y))
 
 
 
