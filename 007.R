@@ -155,7 +155,7 @@ ggplot() +
   # write actor names on rectangles
   geom_text(data = actor.grp, aes(x = yearmin, 
                                   # place text rather at the top of the y-axis
-                                  y = 0.95*max(bond.dta$Box.office.2005.adj, na.rm = TRUE), 
+                                  y = max(bond.dta$Box.office.2005.adj, na.rm = TRUE), 
                                   label = Bond.actor,
                                   # colour is already mapped to RT.rating (continuous)
                                   # fill=Bond.actor,
@@ -166,17 +166,21 @@ ggplot() +
   geom_text(data = bond.dta, aes(x = Year, y = 0, 
                                  label = Title, 
                                  angle = 90, 
-                                 hjust = 0, vjust = 0.5))+
+                                 hjust = 0, vjust = 0.5), size=4)+
   # film data
   geom_point(data = bond.dta, aes(x = Year, 
                                   y = Box.office.2005.adj, 
                                   size = Budget.2005.adj, 
                                   colour = as.numeric(Rotten.Tomatoes.rating)))+
   # Rotten Tomatoes rating gradient
-  scale_colour_continuous()+
+  scale_colour_continuous(low="red", high="green", name = "Rotten Tomatoes rating")+
   # increase minimum point size for readability
-  scale_size_continuous(range = c(3, 10))+
-  labs(title = "James Bond films", x="", y="Box office earnings (in 2005 dollars)")
+  scale_size_continuous(name = "Budget (2005 mil. dollars)", range = c(3, 10))+
+  theme_bw()+
+  theme(plot.title = element_text(lineheight=.8, face="bold"))+
+  # remove actor names from legend
+  guides(fill=FALSE)+
+  labs(title = "Box office results, budgets, and ratings of James Bond films\n", x="", y="Box office earnings (in 2005 dollars)")
 
 
 
