@@ -155,12 +155,18 @@ ggplot() +
   # write actor names on rectangles
   geom_text(data = actor.grp, aes(x = yearmin, 
                                   # place text rather at the top of the y-axis
-                                  y = 0.9*max(bond.dta$Box.office.2005.adj, na.rm = TRUE), 
+                                  y = 0.95*max(bond.dta$Box.office.2005.adj, na.rm = TRUE), 
                                   label = Bond.actor,
                                   # colour is already mapped to RT.rating (continuous)
                                   # fill=Bond.actor,
                                   angle = 90, 
+                                  hjust = 1, vjust = 1,
                                   alpha = 0.6))+
+  # film names
+  geom_text(data = bond.dta, aes(x = Year, y = 0, 
+                                 label = Title, 
+                                 angle = 90, 
+                                 hjust = 0, vjust = 0.5))+
   # film data
   geom_point(data = bond.dta, aes(x = Year, 
                                   y = Box.office.2005.adj, 
