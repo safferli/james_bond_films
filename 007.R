@@ -163,10 +163,9 @@ ggplot() +
                                   alpha = 0.6))+
   # film data
   geom_point(data = bond.dta, aes(x = Year, 
-                 y = Box.office.2005.adj, 
-                 size = Budget.2005.adj, 
-                 colour = as.numeric(Rotten.Tomatoes.rating)
-  ))+
+                                  y = Box.office.2005.adj, 
+                                  size = Budget.2005.adj, 
+                                  colour = as.numeric(Rotten.Tomatoes.rating)))+
   # Rotten Tomatoes rating gradient
   scale_colour_continuous()+
   # increase minimum point size for readability
