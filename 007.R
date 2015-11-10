@@ -121,7 +121,7 @@ bond.dta %>% ggplot()+
                  colour=as.numeric(Rotten.Tomatoes.rating)
             ))+
   scale_colour_continuous()
-
+ggsave(file="bond-bare-plot.png")
 
 # http://stackoverflow.com/questions/9968975/using-ggplot2-in-r-how-do-i-make-the-background-of-a-graph-different-colours-in
 ## get Bond actor year grouping for rectangling
@@ -183,7 +183,8 @@ ggplot() +
   # remove actor names from legend
   guides(fill=FALSE)+
   labs(title = "Box office results, budgets, and ratings of James Bond films\n", x="", y="Box office earnings (in 2005 dollars)")
-
+# export to size that fits everything into graph, use golden ratio
+ggsave(file="bond-full.png", width = 30, height = 30/((1+sqrt(5))/2), units = "cm")
 
 
 
