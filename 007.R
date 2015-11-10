@@ -76,7 +76,8 @@ bond.films %<>%
     # rename the 2005 adjusted price values
     Box.office.2005.adj = as.numeric(Box.office.1), 
     Budget.2005.adj = as.numeric(Budget.1), 
-    Salary.of.Bond.actor.2005.adj = as.numeric(f.retrieve.initial.numbers(Salary.of.Bond.actor.1))
+    Salary.of.Bond.actor.2005.adj = as.numeric(f.retrieve.initial.numbers(Salary.of.Bond.actor.1)),
+    RoI = Box.office.2005.adj/Budget.2005.adj
   ) %>% 
   # remove old uninformative uniqueness naming
   select(-contains("1"))
@@ -161,9 +162,7 @@ ggplot() +
                                   # fill=Bond.actor,
                                   angle = 90, 
                                   hjust = 1, vjust = 1
-                                  # this shows up in the legend, so I'll keep it out -- no idea why :(
-                                  #alpha = 0.6
-                                  ))+
+                                  ), alpha = 0.6, size = 5)+
   # film names
   geom_text(data = bond.dta, aes(x = Year, y = 0, 
                                  label = Title, 
@@ -182,7 +181,8 @@ ggplot() +
   theme(plot.title = element_text(lineheight=.8, face="bold"))+
   # remove actor names from legend
   guides(fill=FALSE)+
-  labs(title = "Box office results, budgets, and ratings of James Bond films\n", x="", y="Box office earnings (in 2005 dollars)")
+  labs(title = "Box office results, budgets, and ratings of James Bond films\n", 
+       x="", y="Box office earnings (in 2005 mil. dollars)")
 # export to size that fits everything into graph, use golden ratio
 ggsave(file="bond-full.png", width = 30, height = 30/((1+sqrt(5))/2), units = "cm")
 
