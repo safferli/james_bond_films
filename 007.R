@@ -161,6 +161,7 @@ ggplot() +
                                   # fill=Bond.actor,
                                   angle = 90, 
                                   hjust = 1, vjust = 1
+                                  # this shows up in the legend, so I'll keep it out -- no idea why :(
                                   #alpha = 0.6
                                   ))+
   # film names
