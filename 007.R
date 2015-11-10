@@ -160,8 +160,9 @@ ggplot() +
                                   # colour is already mapped to RT.rating (continuous)
                                   # fill=Bond.actor,
                                   angle = 90, 
-                                  hjust = 1, vjust = 1,
-                                  alpha = 0.6))+
+                                  hjust = 1, vjust = 1
+                                  #alpha = 0.6
+                                  ))+
   # film names
   geom_text(data = bond.dta, aes(x = Year, y = 0, 
                                  label = Title, 
